@@ -1,82 +1,78 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: unused_import, use_key_in_widget_constructors, prefer_const_constructors
 
-void main() {
+import 'package:flutter/material.dart';
+import 'screens/signin_screens.dart'; // Import your sign-in screen
+// import 'screens/home_screen.dart';
+import 'screens/signup_screen.dart'; // Import your sign-up screen
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+
+void main()  async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
+  
 }
 
+
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.grey[300],
-        body: const Center(
-          child: Card(
-            color: Colors.black,
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Brenda Current Account',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.red,
-                        size: 24.0,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      Text(
-                        '0143 XXXX XXXX',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Text(
-                        'KSH 356,320.90',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Available balance',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+    return const MaterialApp(
+      home: HomeScreen(), // Set HomeScreen as the initial screen
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  // ignore: use_super_parameters
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    SignInScreen(), // Sign-in screen
+
+    SignUpScreen(), // Sign-up screen
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('My App'),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: _screens[_currentIndex], // Display the currently selected screen
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index; // Update the selected screen index
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.login),
+            label: 'Sign In',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_add),
+            label: 'Sign Up',
+          ),
+        ],
       ),
     );
   }
