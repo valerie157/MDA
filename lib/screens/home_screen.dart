@@ -1,32 +1,106 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/screens/hotelrooms_screen.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../providers/hotel_provider.dart';
+
+class MyHomePage extends StatelessWidget {
+  final String title;
+
+  const MyHomePage({required this.title, super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My App'),
-      ),
-      body: const Center(
-        child: Text('Welcome to My App!'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+    return ChangeNotifierProvider(
+      create: (_) => HotelProvider()..fetchHotels(),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(title),
+          centerTitle: true,
+        ),
+        body: Consumer<HotelProvider>(
+          builder: (context, provider, child) {
+            if (provider.hotels.isEmpty) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return GridView.builder(
+              padding: const EdgeInsets.all(16.0),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+              ),
+              itemCount: provider.hotels.length,
+              itemBuilder: (context, index) {
+                final hotel = provider.hotels[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HotelRoomsScreen(hotel: hotel),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            hotel.imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                hotel.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text(
+                                hotel.location,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    hotel.rating.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

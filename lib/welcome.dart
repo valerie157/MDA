@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/screens/signin_screens.dart';
 
 class Welcome extends StatefulWidget {
+  // ignore: use_key_in_widget_constructors
   const Welcome({Key? key});
 
   @override
@@ -34,7 +35,7 @@ class _WelcomeState extends State<Welcome> {
                   _auth.signOut();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SignInScreen()),
+                    MaterialPageRoute(builder: (context) => const Login()),
                   );
                 },
                 child: const Text("Logout"),

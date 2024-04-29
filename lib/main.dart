@@ -1,11 +1,12 @@
 // ignore_for_file: unused_import, use_key_in_widget_constructors, prefer_const_constructors
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'screens/signin_screens.dart'; // Import your sign-in screen
-// import 'screens/home_screen.dart';
-import 'screens/signup_screen.dart'; // Import your sign-up screen
+import 'screens/signin_screens.dart'; 
+import 'screens/home_screen.dart';
+import 'screens/signup_screen.dart'; 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 
 
 void main()  async {
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    SignInScreen(), // Sign-in screen
+    Login(), // Sign-in screen
 
     SignUpScreen(), // Sign-up screen
   ];
