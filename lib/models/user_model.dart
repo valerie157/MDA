@@ -3,13 +3,13 @@
 class UserModel {
   String? uid;
   String? email;
-  String? displayName;
+  String? name;
   String? photoURL;
 
   UserModel({
     required this.uid,
     required this.email,
-    required this.displayName,
+    required this.name,
     this.photoURL, required String firstname, required String lastname, 
   });
 //serialize data to JSON
@@ -17,7 +17,7 @@ class UserModel {
     return {
       'id': uid,
       'email': email,
-      'displayName': displayName,
+      'displayName': name,
       'photoURL': photoURL,
     };
   }
@@ -28,7 +28,7 @@ class UserModel {
     return UserModel(
       uid: json['id'],
       email: json['email'],
-      displayName: json['displayName'],
+      name: json['displayName'],
       photoURL: json['photoURL'], firstname: '', lastname: '',  
     );
   }

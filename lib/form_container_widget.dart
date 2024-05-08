@@ -23,7 +23,7 @@ class FormContainerWidget extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.onFieldSubmitted,
-    this.inputType, required List<Widget> children,
+    this.inputType, required List<Widget> children, required IconData prefixIcon, required bool obscureText,
   });
 
   @override

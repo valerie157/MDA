@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/data/dummy.dart';
-import 'package:my_flutter_app/models/hotel_model.dart';
-import 'package:my_flutter_app/domain/models/services/hotel-service.dart';
+
+import '../data/dummy.dart';
+import '../domain/models/services/hotel-service.dart';
+
+import '../models/hotel_model.dart';
 
 class HotelProvider extends ChangeNotifier {
   final HotelService _hotelService = HotelService();
@@ -10,8 +11,6 @@ class HotelProvider extends ChangeNotifier {
   List<Hotel> _hotels = [];
   //getter for the hotels list
   List<Hotel> get hotels => _hotels;
-
-  get hotel => null;
 /*
 **All the methods below are from the HotelService class
 */
@@ -20,7 +19,7 @@ class HotelProvider extends ChangeNotifier {
       _hotels = await _hotelService.getHotels();
       notifyListeners();
     } catch (e) {
-      debugPrint('Error fetching hotels: $e');
+      print('Error fetching hotels: $e');
     }
   }
 
@@ -30,11 +29,20 @@ class HotelProvider extends ChangeNotifier {
       _hotels.add(hotel);
       notifyListeners();
     } catch (e) {
-      debugPrint('Error adding hotel: $e');
+      print('Error adding hotel: $e');
     }
   }
 
- 
+  Future<void> updateHotel(Hotel hotel) async {
+    try {
+      await _hotelService.updateHotel(hotel);
+      int index = _hotels.indexWhere((h) => h.id == hotel.id);
+      _hotels[index] = hotel;
+      notifyListeners();
+    } catch (e) {
+      print('Error updating hotel: $e');
+    }
+  }
 
   Future<void> deleteHotel(Hotel hotel) async {
     try {
@@ -42,7 +50,7 @@ class HotelProvider extends ChangeNotifier {
       _hotels.removeWhere((h) => h.id == hotel.id);
       notifyListeners();
     } catch (e) {
-      debugPrint('Error deleting hotel: $e');
+      print('Error deleting hotel: $e');
     }
   }
 
@@ -53,7 +61,7 @@ class HotelProvider extends ChangeNotifier {
       _hotels = dummyHotels;
       notifyListeners();
     } catch (e) {
-      debugPrint('Error setting hotels: $e');
+      print('Error setting hotels: $e');
     }
   }
 }

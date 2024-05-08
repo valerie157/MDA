@@ -32,7 +32,7 @@ class AuthService {
       firstname: firstname,
       lastname: lastname,
       email: email,
-      displayName: '',
+      name: '',
     );
   } on FirebaseAuthException catch (e) {
     // Handle specific FirebaseAuthException errors
@@ -79,7 +79,7 @@ Future<void> updateUserProfile(User? user, String firstname, String lastname,Str
         password: password,
       );
       User? user = userCredential.user;
-      return UserModel(uid: user?.uid, displayName: user?.displayName,email: user?.email, firstname: '', lastname: '');
+      return UserModel(uid: user?.uid, name: user?.displayName,email: user?.email, firstname: '', lastname: '');
     } on FirebaseAuthException catch (e) {
       // Handle specific FirebaseAuthException errors
       String errorMessage = '';

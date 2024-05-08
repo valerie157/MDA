@@ -1,33 +1,32 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:my_flutter_app/models/user_model.dart';
 import 'package:my_flutter_app/providers/auth_provider.dart';
-import 'package:my_flutter_app/screens/hotelist_screen.dart';
+import 'package:my_flutter_app/screens/home_screen.dart';
 import 'package:my_flutter_app/screens/signup_screen.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
 // A StatefulWidget for the Login screen
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-   // A GlobalKey for the Form widget
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  // TextEditingController for the email TextField
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  final TextEditingController _nameController = TextEditingController(); // Controller for name field
   final AuthProvider _authProvider = AuthProvider();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance; // Firestore instance
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose(); // Dispose name controller
     super.dispose();
   }
 
@@ -36,116 +35,82 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.brown),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+      body: Container(
+        color: Colors.blueGrey, // Set your desired background color here
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const SizedBox(height: 20),
+                  TextFormField(
                     controller: _emailController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter email address'),
                       EmailValidator(errorText: 'Please enter a valid email'),
                     ]).call,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Email',
-                      labelText: 'Email',
-                      prefixIcon: Icon(
-                        Icons.email,
-                        color: Colors.brown,
-                      ),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9.0)),
-                      ),
+                      prefixIcon: const Icon(Icons.email),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+                  const SizedBox(height: 20),
+                  TextFormField(
                     controller: _passwordController,
                     obscureText: true,
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter password'),
                     ]).call,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Password',
-                      labelText: 'Password',
-                      prefixIcon: Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9.0)),
-                      ),
+                      prefixIcon: const Icon(Icons.lock),
                     ),
                   ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () => _login(),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: Colors.blue,
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _nameController,
+                    validator: RequiredValidator(errorText: 'Enter your name'), // Validation for name field
+                    decoration: InputDecoration(
+                      hintText: 'Name',
+                      prefixIcon: const Icon(Icons.person),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _login,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                      },
+                      child: Text(
+                        "Don't have an account? Signup",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).primaryColor,
+                          decoration: TextDecoration.underline,
                         ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white, fontSize: 22),
-                        ),
                       ),
                     ),
                   ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Don't have an account? ",
-                        style: const TextStyle(fontSize: 18, color: Colors.black),
-                        children: [
-                          TextSpan(
-                            text: 'Signup',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.deepPurple,
-                              decoration: TextDecoration.underline,
-                            ),
-                            // Add onTap to handle navigation to signup screen
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                // Navigate to signup screen
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -153,25 +118,28 @@ class _LoginState extends State<Login> {
     );
   }
 
-void _login() async {
-  if (_formKey.currentState!.validate()) {
-    // Call the login method from AuthProvider with the appropriate context
-    UserModel? user = await _authProvider.signInWithEmailAndPassword(
-      context, // Provide the BuildContext
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      UserModel? user = await _authProvider.signInWithEmailAndPassword(
+        context,
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
 
       if (user != null) {
-        // Navigate to the profile page with the user's first name
-Navigator.pushReplacement(
-  // ignore: use_build_context_synchronously
-  context,
-  MaterialPageRoute(builder: (context) => const HotelListScreen()),
-);
+        // Write user data to Firestore after successful login
+        await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'email': user.email,
+          'name': _nameController.text.trim(), // Get name from the text field
+          // Add more user data fields as needed
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage(title: '')),
+        );
       } else {
-        // Show an error message or handle unsuccessful login
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Invalid email or password')),
         );

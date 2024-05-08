@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -51,7 +50,7 @@ class HotelService {
 class AddHotelScreen extends StatefulWidget {
   final String hotelId;
 
-  const AddHotelScreen({super.key, required this.hotelId});
+  const  AddHotelScreen({super.key,  required this.hotelId});
 
   @override
   _AddHotelScreenState createState() => _AddHotelScreenState();
@@ -68,7 +67,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Hotel'),
+        title: const  Text('Add Hotel'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,7 +88,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
               ),
               TextFormField(
                 controller: locationController,
-                decoration: const InputDecoration(labelText: 'Location'),
+                decoration: const  InputDecoration(labelText: 'Location'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a location';
@@ -99,7 +98,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
               ),
               TextFormField(
                 controller: imageUrlController,
-                decoration: const InputDecoration(labelText: 'Image URL'),
+                decoration: const  InputDecoration(labelText: 'Image URL'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an image URL';
@@ -110,7 +109,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
               TextFormField(
                 controller: ratingController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Rating'),
+                decoration: const  InputDecoration(labelText: 'Rating'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a rating';
@@ -118,7 +117,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
+              const  SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -137,7 +136,7 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Save'),
+                child: const  Text('Save'),
               ),
             ],
           ),
