@@ -54,6 +54,7 @@ class AddHotelScreen extends StatefulWidget {
   const AddHotelScreen({super.key, required this.hotelId});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddHotelScreenState createState() => _AddHotelScreenState();
 }
 
@@ -175,6 +176,43 @@ class MyHomePage extends StatelessWidget {
               );
             },
             child: const Text('Add Hotel'),
+          ),
+          const SizedBox(height: 20.0),
+          Expanded(
+            child: StreamBuilder<List<Hotel>>(
+              stream: HotelService().getHotelsFromFirestore(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<Hotel> hotels = snapshot.data ?? [];
+                  return ListView.builder(
+                    itemCount: hotels.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        child: Card(
+                          elevation: 4.0,
+                          child: ListTile(
+                            leading: Image.network(
+                              hotels[index].imageUrl,
+                              width: 150.0,
+                              height: 150.0,
+                              fit: BoxFit.cover,
+                            ),
+                            title: Text(hotels[index].name),
+                            subtitle: Text(hotels[index].location),
+                            trailing: Text('Rating: ${hotels[index].rating.toStringAsFixed(1)}'),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),

@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import the hotel model from the hotel_model.dart file in the models folder
-import '../../../models/hotel_model.dart';
+import 'package:my_flutter_app/models/hotel_model.dart';
+import 'package:my_flutter_app/models/room_model.dart';
 
-//class to handle the hotel data
-//This would be some what similar to controllers in express.js
 class HotelService {
-  //initialize the Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-//get the hotels from the Firestore database
+  // Get the hotels from the Firestore database
   Future<List<Hotel>> getHotels() async {
     QuerySnapshot snapshot = await _firestore.collection('hotels').get();
     return snapshot.docs
@@ -16,26 +13,25 @@ class HotelService {
         .toList();
   }
 
-//add a new hotel to the Firestore database
+  // Add a new hotel to the Firestore database
   Future<void> addHotel(Hotel hotel) async {
     await _firestore.collection('hotels').add(hotel.toJson());
   }
 
-//update a hotel in the Firestore database by passing the hotel object with a matching id
+  // Update a hotel in the Firestore database by passing the hotel object with a matching id
   Future<void> updateHotel(Hotel hotel) async {
     await _firestore
         .collection('hotels')
-        .doc(hotel.id.toString())
+        .doc(hotel.id)
         .update(hotel.toJson());
   }
 
-  //delete a hotel from the Firestore database by passing the hotel id
-   Future<void> deleteHotel(hotel) async {
-    await _firestore.collection('hotels').doc(hotel.id.toString()).delete();
+  // Delete a hotel from the Firestore database by passing the hotel id
+  Future<void> deleteHotel(String hotelId) async {
+    await _firestore.collection('hotels').doc(hotelId).delete();
   }
 
-//set the hotels in the Firestore database by passing a list of hotels
-//similar to seeding a db in Laravel using a factory class
+  // Set the hotels in the Firestore database by passing a list of hotels
   Future<void> setHotels(List<Hotel> hotels) async {
     // Clear existing data
     QuerySnapshot snapshot = await _firestore.collection('hotels').get();
@@ -49,5 +45,24 @@ class HotelService {
     }
   }
 
-  void addHotelToFirestore(Hotel newHotel) {}
+  // Book a hotel
+  Future<void> bookHotel(String hotelId, String userId, DateTime checkInDate, DateTime checkOutDate) async {
+    await _firestore.collection('bookings').add({
+      'hotelId': hotelId,
+      'userId': userId,
+      'checkInDate': checkInDate,
+      'checkOutDate': checkOutDate,
+    });
+  }
+
+  // Add rooms to a hotel
+  Future<void> addRoomsToHotel(String hotelId, List<Room> rooms) async {
+    try {
+      await _firestore.collection('hotels').doc(hotelId).update({
+        'rooms': FieldValue.arrayUnion(rooms.map((room) => room.toMap()).toList()),
+      });
+    } catch (error) {
+      print('Error adding rooms to hotel: $error');
+    }
+  }
 }

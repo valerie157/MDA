@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class HomeScreen extends StatefulWidget {
   // ignore: use_super_parameters
   const HomeScreen({Key? key}) : super(key: key);
@@ -47,14 +48,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Login(), // Sign-in screen
 
     SignUpScreen(), // Sign-up screen
+
+    
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My App'),
-        backgroundColor: Colors.deepPurple,
+        title: Text('Hotel App'),
+        backgroundColor: Colors.deepOrangeAccent,
       ),
       body: _screens[_currentIndex], // Display the currently selected screen
       bottomNavigationBar: BottomNavigationBar(

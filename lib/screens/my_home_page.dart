@@ -6,7 +6,7 @@ import '../../data/dummy.dart';
 class MyHomePage extends StatelessWidget {
   final String title;
 
-  const MyHomePage({required this.title, super.key});
+  const MyHomePage({required this.title, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

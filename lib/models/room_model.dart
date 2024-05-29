@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Room {
   final String type;
   final double rate;
@@ -25,4 +27,10 @@ class Room {
       isAvailable: json['isAvailable'],
     );
   }
+
+  String? get name => null;
+
+  static fromSnapshot(QueryDocumentSnapshot<Object?> roomDoc) {}
+
+  toMap() {}
 }
